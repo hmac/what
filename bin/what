@@ -1,0 +1,14 @@
+#! /usr/bin/env ruby
+require "what"
+
+stop = false
+%(INT TERM).each { |signal| trap(signal) { stop = true } }
+
+queue = ARGV[1]
+raise "no queue specified" unless queue
+
+loop do
+  break if stop
+  What::Worker.work(queue)
+  sleep 0.01
+end
