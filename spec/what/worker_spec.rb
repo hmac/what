@@ -52,6 +52,13 @@ RSpec.describe What::Worker do
         expect(failed_job.error_count).to eq(1)
         expect(failed_job.runnable).to eq(false)
         expect(failed_job.failed_at).not_to be_nil
+        expect(failed_job.runnable).to eq(false)
+      end
+
+      it "doesn't attempt to re-run the job" do
+        subject.call
+        subject.call
+        expect(WhatJob.first.error_count).to eq(1)
       end
     end
   end

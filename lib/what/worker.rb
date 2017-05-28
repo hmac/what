@@ -30,6 +30,7 @@ module What
       Connection.transaction do
         begin
           job = get_job(queue)
+          return if job.nil? # there are no jobs to work
           klass = self.class.const_get(job["job_class"])
           args = JSON.parse(job["args"])
           Connection.transaction { klass.new.run(*args) }
