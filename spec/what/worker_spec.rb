@@ -4,7 +4,7 @@ require "spec_helper"
 require "support/payment"
 require "support/create_payment"
 require "support/blow_up"
-require "support/job_stats"
+require "support/what_job"
 
 RSpec.describe What::Worker do
   subject do
@@ -18,10 +18,10 @@ RSpec.describe What::Worker do
       end
 
       it "works and then destroys the job" do
-        expect(JobStats.count).to eq(1)
+        expect(WhatJob.count).to eq(1)
         subject.call
         expect(Payment.count).to eq(1)
-        expect(JobStats.count).to eq(0)
+        expect(WhatJob.count).to eq(0)
       end
     end
 
@@ -32,12 +32,12 @@ RSpec.describe What::Worker do
       end
 
       it "works one job" do
-        expect(JobStats.count).to eq(2)
+        expect(WhatJob.count).to eq(2)
         subject.call
         expect(Payment.count).to eq(1)
         subject.call
         expect(Payment.count).to eq(2)
-        expect(JobStats.count).to eq(0)
+        expect(WhatJob.count).to eq(0)
       end
     end
 
@@ -46,9 +46,12 @@ RSpec.describe What::Worker do
 
       it "marks the job as failed, recording the stack trace" do
         subject.call
-        expect(JobStats.count).to eq(1)
-        failed_job = JobStats.first
-        # expect(failed_job.last_error).not_to be_nil
+        expect(WhatJob.count).to eq(1)
+        failed_job = WhatJob.first
+        expect(failed_job.last_error).to match(/oh noes!/)
+        expect(failed_job.error_count).to eq(1)
+        expect(failed_job.runnable).to eq(false)
+        expect(failed_job.failed_at).not_to be_nil
       end
     end
   end

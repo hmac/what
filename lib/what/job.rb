@@ -9,7 +9,10 @@ module What
     SQL
 
     def self.enqueue(*args)
-      What::Connection.execute(ENQUEUE, [name, args.to_json, "default"])
+      What::Connection.execute(
+        ENQUEUE,
+        name: name, args: args.to_json, queue: "default"
+      )
     end
   end
 end

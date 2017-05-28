@@ -2,10 +2,13 @@
 
 require "pry"
 require "what"
+require "active_record"
 
-What::Connection.connection = PG::Connection.new(dbname: "what_test")
-What::Connection.connection.type_map_for_results =
-  PG::BasicTypeMapForResults.new(What::Connection.connection)
+ActiveRecord::Base.establish_connection(
+  adapter: "postgresql",
+  database: "what_test"
+)
+What::Connection.connection = ActiveRecord::Base.connection
 
 RSpec.configure do |config|
   config.around(:each) do |example|
