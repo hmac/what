@@ -1,24 +1,25 @@
 # frozen_string_literal: true
 
 module What
+  # Provides a small API for interacting with the database
   class Connection
-    def self.transaction(&blk)
-      @connection.transaction(&blk)
-    end
+    class << self
+      attr_accessor :connection
 
-    def self.execute(sql, raw_params=[])
-      params = raw_params.map do |name, value|
-        ActiveRecord::Relation::QueryAttribute.new(name, value, ActiveRecord::Type.default_value)
+      def transaction(&blk)
+        @connection.transaction(&blk)
       end
-      @connection.exec_query(sql, "", params)
-    end
 
-    def self.connection
-      @connection ||= raise "Connection not established"
-    end
-
-    def self.connection=(connection)
-      @connection = connection
+      def execute(sql, raw_params = [])
+        params = raw_params.map do |name, value|
+          ActiveRecord::Relation::QueryAttribute.new(
+            name,
+            value,
+            ActiveRecord::Type.default_value
+          )
+        end
+        @connection.exec_query(sql, "", params)
+      end
     end
   end
 end

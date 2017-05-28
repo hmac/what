@@ -3,3 +3,12 @@ AllCops:
 
 Style/StringLiterals:
   EnforcedStyle: 'double_quotes'
+
+Metrics/BlockLength:
+  Exclude:
+    - spec/**/*_spec.rb
+
+Style/Documentation:
+  Exclude:
+    - spec/support/*.rb
+    - lib/what/migrations/*.rb

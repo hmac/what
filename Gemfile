@@ -7,6 +7,6 @@ gem "pg", "0.20.0"
 
 group :development do
   gem "pry"
-  gem "rubocop"
   gem "rspec"
+  gem "rubocop"
 end

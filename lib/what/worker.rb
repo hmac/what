@@ -1,6 +1,9 @@
 # frozen_string_literal: true
 
 module What
+  # The What worker
+  # This class is responsible for pulling jobs off the queue, working them,
+  # and then destroying them
   class Worker
     GET_JOB = <<~SQL
       SELECT *
@@ -26,6 +29,7 @@ module What
       WHERE id = $1
     SQL
 
+    # rubocop:disable Metrics/AbcSize, Metrics/MethodLength
     def self.work(queue)
       Connection.transaction do
         begin
@@ -39,13 +43,14 @@ module What
           record_failure(job, error)
         end
       end
-    rescue => _error
+    rescue => error
       # This means we couldn't reach the database or some other
       # error occurred whilst attempting to mark the job as failed
       #
       # We should log this
-      raise _error # for now while testing, raise
+      raise error # for now while testing, raise
     end
+    # rubocop:enable Metrics/AbcSize, Metrics/MethodLength
 
     def self.get_job(queue)
       Connection.execute(GET_JOB, queue: queue).to_hash[0]
@@ -56,7 +61,8 @@ module What
     end
 
     def self.record_failure(job, error)
-      formatted_error = "#{error.class}: #{error.message}\n#{error.backtrace.join("\n")}"
+      formatted_error =
+        "#{error.class}: #{error.message}\n#{error.backtrace.join("\n")}"
       Connection.execute(
         RECORD_FAILURE,
         id: job["id"],
