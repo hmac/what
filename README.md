@@ -17,3 +17,31 @@ Table Structure
       error_count integer,
       runnable boolean
     )
+
+Usage
+-----
+
+## 1. Add What to your Gemfile
+    # This will be less ridiculous once What is released/on rubygems
+    gem "what", git: "https://github.com/hmac/what"
+
+## 2. Create an entrypoint file for your project.
+This is the file that What workers will load before running your jobs - it
+should require all the relevant classes and libraries necessary for your jobs
+to run. For Rails, you should be able to use `config/environment.rb` instead
+of creating your own. For an example, see `spec/support.rb`.
+
+## 3. Write your jobs as subclasses of `What::Job`
+Your jobs should subclass `What::Job` and define a `run` method which will be
+called by the worker.
+    class ResetUserPassword < What::Job
+      def run(id)
+        user = User.find(id)
+        ResetPasswordMailer.new(user).deliver!
+      end
+    end
+
+## 4. Spin up What workers
+What workers run in separate processes, and can be launched via the `what`
+executable. They take as arguments the queue to work and the entrypoint file.
+    bundle exec what default ./entrypoint.rb

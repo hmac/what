@@ -4,10 +4,7 @@ require "pry"
 require "what"
 require "active_record"
 
-ActiveRecord::Base.establish_connection(
-  adapter: "postgresql",
-  database: "what_test"
-)
+ActiveRecord::Base.establish_connection(adapter: "postgresql")
 What::Connection.connection = ActiveRecord::Base.connection
 
 RSpec.configure do |config|
