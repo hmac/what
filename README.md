@@ -166,4 +166,4 @@ is intended for diagnostic purposes.
 References
 ----------
 
-What is a shamless rip-off of [Que](https://github.com/chanks/que).
+What is a shameless rip-off of [Que](https://github.com/chanks/que).
