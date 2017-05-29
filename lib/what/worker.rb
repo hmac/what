@@ -32,9 +32,9 @@ module What
     # rubocop:disable Metrics/AbcSize, Metrics/MethodLength
     def self.work(queue)
       Connection.transaction do
+        job = get_job(queue)
+        return if job.nil? # there are no jobs to work
         begin
-          job = get_job(queue)
-          return if job.nil? # there are no jobs to work
           klass = self.class.const_get(job["job_class"])
           args = JSON.parse(job["args"])
           Connection.transaction { klass.new.run(*args) }

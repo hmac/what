@@ -1,5 +1,7 @@
 # frozen_string_literal: true
 
+require "active_record"
+
 module What
   # Provides a small API for interacting with the database
   class Connection

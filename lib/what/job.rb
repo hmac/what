@@ -1,5 +1,7 @@
 # frozen_string_literal: true
 
+require "json"
+
 module What
   # The base class for What jobs
   # All jobs should inherit from this class
@@ -13,7 +15,7 @@ module What
     def self.enqueue(*args)
       What::Connection.execute(
         ENQUEUE,
-        name: name, args: args.to_json, queue: "default"
+        name: name, args: JSON.dump(args), queue: "default"
       )
     end
   end
