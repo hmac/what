@@ -1,16 +1,30 @@
 #! /usr/bin/env ruby
 # frozen_string_literal: true
 
+$LOAD_PATH << "lib"
 require "what"
+require "active_record"
 
 stop = false
-%(INT TERM).each { |signal| trap(signal) { stop = true } }
+%w[INT TERM].each { |signal| trap(signal) { stop = true } }
 
-queue = ARGV[1]
+queue = ARGV[0]
 raise "no queue specified" unless queue
+
+file = ARGV[1]
+raise "no file specified" unless file
+
+require file
+
+ActiveRecord::Base.establish_connection(adapter: "postgresql")
+What::Connection.connection = ActiveRecord::Base.connection
+
+puts "What starting up"
 
 loop do
   break if stop
   What::Worker.work(queue)
-  sleep 0.01
+  sleep 0.1
 end
+
+puts "What shutting down"
