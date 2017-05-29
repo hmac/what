@@ -41,7 +41,7 @@ module What
           Connection.transaction { klass.new.run(*args) }
           destroy_job(job)
         rescue => error
-          record_failure(job, error)
+          record_failure(job, error, klass)
         end
       end
     rescue => error
@@ -61,15 +61,8 @@ module What
       Connection.execute(DESTROY_JOB, id: job["id"])
     end
 
-    def self.record_failure(job, error)
-      formatted_error =
-        "#{error.class}: #{error.message}\n#{error.backtrace.join("\n")}"
-      Connection.execute(
-        RECORD_FAILURE,
-        id: job["id"],
-        last_error: formatted_error,
-        error_count: job["error_count"] + 1
-      )
+    def self.record_failure(job, error, klass)
+      klass.handle_failure(job, error)
     end
   end
 end

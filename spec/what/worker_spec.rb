@@ -1,10 +1,6 @@
 # frozen_string_literal: true
 
 require "spec_helper"
-require "support/payment"
-require "support/create_payment"
-require "support/blow_up"
-require "support/what_job"
 
 require "date"
 
@@ -52,27 +48,6 @@ RSpec.describe What::Worker do
         subject.call
         expect(WhatJob.count).to eq(1)
         expect(WhatJob.first.failed_at).to eq(nil)
-      end
-    end
-
-    context "when a job fails" do
-      before { BlowUp.enqueue }
-
-      it "marks the job as failed, recording the stack trace" do
-        subject.call
-        expect(WhatJob.count).to eq(1)
-        failed_job = WhatJob.first
-        expect(failed_job.last_error).to match(/oh noes!/)
-        expect(failed_job.error_count).to eq(1)
-        expect(failed_job.runnable).to eq(false)
-        expect(failed_job.failed_at).not_to be_nil
-        expect(failed_job.runnable).to eq(false)
-      end
-
-      it "doesn't attempt to re-run the job" do
-        subject.call
-        subject.call
-        expect(WhatJob.first.error_count).to eq(1)
       end
     end
   end

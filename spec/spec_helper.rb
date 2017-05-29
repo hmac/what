@@ -3,6 +3,9 @@
 require "pry"
 require "what"
 require "active_record"
+require "timecop"
+
+require "support"
 
 ActiveRecord::Base.establish_connection(adapter: "postgresql")
 What::Connection.connection = ActiveRecord::Base.connection
