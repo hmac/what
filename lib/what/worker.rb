@@ -10,6 +10,7 @@ module What
       FROM what_jobs
       WHERE runnable = true
       AND queue = $1
+      AND run_at < now()
       FOR UPDATE SKIP LOCKED
       LIMIT 1
     SQL
