@@ -23,6 +23,7 @@ jobs:
           key: gemfile-lock-{{ .Branch }}-{{ checksum "Gemfile.lock" }}
           paths:
             - "vendor/bundle"
+      - run: bundle exec rubocop
       - run:
           name: wait for database
           command: |
