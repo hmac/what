@@ -20,7 +20,7 @@ module What
     class << self
       def enqueue(*args, run_at: nil)
         sql = run_at ? ENQUEUE_WITH_RUN_AT : ENQUEUE
-        params = { name: name, args: JSON.dump(args), queue: "default" }
+        params = { name: name, args: JSON.dump(args), queue: queue }
         params[:run_at] = run_at if run_at
 
         What::Connection.execute(sql, params)
@@ -32,6 +32,12 @@ module What
 
       def format_error(error)
         "#{error.class}: #{error.message}\n#{error.backtrace.join("\n")}"
+      end
+
+      attr_writer :queue
+
+      def queue
+        @queue || "default"
       end
     end
   end
