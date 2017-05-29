@@ -56,3 +56,8 @@ What workers run in separate processes, and can be launched via the `what`
 executable. They take as arguments the queue to work and the entrypoint file.
 
     bundle exec what default ./entrypoint.rb
+
+References
+----------
+
+What is a shamless rip-off of [Que](https://github.com/chanks/que).
