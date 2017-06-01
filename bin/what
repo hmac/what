@@ -18,7 +18,9 @@ require file
 ActiveRecord::Base.establish_connection(adapter: "postgresql")
 What::Connection.connection = ActiveRecord::Base.connection
 
-puts "What starting up"
+What.logger = Logger.new(STDOUT)
+
+What.log_info("What starting up")
 
 loop do
   break if stop
@@ -26,4 +28,4 @@ loop do
   sleep 0.1
 end
 
-puts "What shutting down"
+What.log_info("What shutting down")

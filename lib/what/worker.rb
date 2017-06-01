@@ -47,9 +47,8 @@ module What
     rescue => error
       # This means we couldn't reach the database or some other
       # error occurred whilst attempting to mark the job as failed
-      #
-      # We should log this
-      raise error # for now while testing, raise
+
+      What.log_error(error.message)
     end
     # rubocop:enable Metrics/AbcSize, Metrics/MethodLength
 
