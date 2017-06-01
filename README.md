@@ -67,17 +67,20 @@ executable. They take as arguments the queue to work and the entrypoint file.
 Working Jobs
 ------------
 
-If you're familiar with [Que](https://github.com/chanks/que), What behaves in
-exactly the same way. You can ignore the rest of this section.
+What works jobs in the following way:
 
-What works jobs by locking the row in the `what_jobs` table, instantiating and
-running the class with the given arguments, and then (if no exception is raised)
-then deleting the row. All this happens transactionally, so a job is either run
-successfully to completion and destroyed or it is not run at all. By using
-the consistency guarantees of Postgres, What can provide exactly-once semantics
-for jobs that only touch the same database. This guarantee does not
-apply to jobs that have side effects outside of the database (like sending
-emails).
+1. Scan the `what_jobs` table for a qualifying job (runnable, in the right queue etc.)
+2. If that job is locked by another process, skip it and go to the next one.
+3. When a qualifying, unlocked job is found, take a FOR UPDATE lock on it.
+4. Instantiate the `job_class` and call its `run` method with the stored arguments.
+5. If `run` raises no exceptions, destroy the job.
+6. If `run` raises an exception, call the `handle_failure` method of the class.
+
+Steps 1-3 happen atomically via PostgreSQL's `FOR UPDATE SKIP LOCKED` clause
+(see [here](https://www.postgresql.org/docs/9.5/static/sql-select.html#SQL-FOR-UPDATE-SHARE) for more info).
+
+If the job fails, it is typically left in the queue. It might be rescheduled to run again
+or left to be handled manually. This behaviour is governed by the failure strategy (see below).
 
 Queues
 ------
