@@ -25,20 +25,20 @@ Table Structure
 Usage
 -----
 
-## 1. Add What to your Gemfile
+### 1. Add What to your Gemfile
 
 ```ruby
     # This will be less ridiculous once What is released/is on rubygems
     gem "what", git: "https://github.com/hmac/what"
 ```
 
-## 2. Create an entrypoint file for your project.
+### 2. Create an entrypoint file for your project.
 This is the file that What workers will load before running your jobs - it
 should require all the relevant classes and libraries necessary for your jobs
 to run. For Rails, you should be able to use `config/environment.rb` instead
 of creating your own. For an example, see `spec/support.rb`.
 
-## 3. Write your jobs as subclasses of `What::Job`
+### 3. Write your jobs as subclasses of `What::Job`
 Your jobs should subclass `What::Job` and define a `run` method which will be
 called by the worker. You should also specify a failure strategy (see below for
 more information on failure strategies), although if you don't then `NoRetry`
@@ -58,7 +58,7 @@ will be used by default. You can also specify a queue, which defaults to
     end
 ```
 
-## 4. Spin up What workers
+### 4. Spin up What workers
 What workers run in separate processes, and can be launched via the `what`
 executable. They take as arguments the queue to work and the entrypoint file.
 
@@ -117,7 +117,7 @@ particular strategy, set it in your job class by `extend`ing the strategy
 
 The details of the different failure strategies are outlined below.
 
-## `NoRetry`
+### `NoRetry`
 
 `NoRetry` is for jobs which shouldn't automatically retried. On failure, the
 job will be left in the queue. The following attributes will be set:
@@ -129,7 +129,7 @@ job will be left in the queue. The following attributes will be set:
 To handle a failed job under `NoRetry`, you'll need to either manually
 reschedule it (by updating `runnable` to `true`) or destroy it.
 
-## `VariableRetry`
+### `VariableRetry`
 
 `VariableRetry` is for jobs which can be retried under certain conditions. It
 is configured with two class-level attributes: `retryable_exceptions` and
