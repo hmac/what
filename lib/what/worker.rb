@@ -40,11 +40,11 @@ module What
           args = JSON.parse(job["args"])
           Connection.transaction { klass.new.run(*args) }
           destroy_job(job)
-        rescue => error
+        rescue StandardError => error
           record_failure(job, error, klass)
         end
       end
-    rescue => error
+    rescue StandardError => error
       # This means we couldn't reach the database or some other
       # error occurred whilst attempting to mark the job as failed
 
