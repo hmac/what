@@ -12,3 +12,6 @@ Style/Documentation:
   Exclude:
     - spec/support/*.rb
     - lib/what/migrations/*.rb
+
+Style/AccessModifierDeclarations:
+  EnforcedStyle: 'inline'

@@ -4,8 +4,8 @@ require "spec_helper"
 require "support"
 
 RSpec.describe "a load test" do
-  def with_workers(n)
-    pids = Array.new(n).map do
+  def with_workers(num_workers)
+    pids = Array.new(num_workers).map do
       spawn("bundle exec what default ./spec/support")
     end
     yield

@@ -3,7 +3,7 @@
 class BlowUp < What::Job
   extend What::Failure::NoRetry
 
-  def run(i = nil)
-    raise "oh noes! - #{i}"
+  def run(arg = nil)
+    raise "oh noes! - #{arg}"
   end
 end
