@@ -24,6 +24,7 @@ What.log_info("What starting up")
 
 loop do
   break if stop
+
   What::Worker.work(queue)
   sleep 0.1
 end
