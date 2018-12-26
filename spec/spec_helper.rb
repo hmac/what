@@ -8,12 +8,15 @@ require "timecop"
 require "support"
 
 ActiveRecord::Base.establish_connection(adapter: "postgresql")
-What::Connection.connection = ActiveRecord::Base.connection
+What.configure do |config|
+  config.connection =
+    What::Connection::ActiveRecord.new(ActiveRecord::Base.connection)
+end
 
 RSpec.configure do |config|
   config.around(:each) do |example|
-    What::Connection.execute("TRUNCATE what_jobs, payments")
+    What.connection.execute("TRUNCATE what_jobs, payments")
     example.run
-    What::Connection.execute("TRUNCATE what_jobs, payments")
+    What.connection.execute("TRUNCATE what_jobs, payments")
   end
 end

@@ -26,7 +26,7 @@ module What
         end
 
         next_interval = retry_intervals[error_count]
-        Connection.execute(
+        What.connection.execute(
           RETRY_AT_INTERVAL,
           id: job["id"],
           last_error: What::Job.format_error(error),

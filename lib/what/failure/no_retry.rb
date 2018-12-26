@@ -15,14 +15,17 @@ module What
       SQL
 
       def handle_failure(job, error)
-        Connection.execute(
+        What.connection.execute(
           MARK_AS_FAILED,
           id: job["id"],
           last_error: What::Job.format_error(error)
         )
       end
+
+      # rubocop:disable Style/AccessModifierDeclarations
       module_function :handle_failure
       public :handle_failure
+      # rubocop:enable Style/AccessModifierDeclarations
     end
   end
 end

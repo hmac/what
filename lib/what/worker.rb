@@ -32,14 +32,14 @@ module What
 
     # rubocop:disable Metrics/AbcSize, Metrics/MethodLength
     def self.work(queue)
-      Connection.transaction do
+      What.connection.transaction do
         job = get_job(queue)
         return if job.nil? # there are no jobs to work
 
         begin
           klass = self.class.const_get(job["job_class"])
           args = JSON.parse(job["args"])
-          Connection.transaction { klass.new.run(*args) }
+          What.connection.transaction { klass.new.run(*args) }
           destroy_job(job)
         rescue StandardError => error
           record_failure(job, error, klass)
@@ -54,11 +54,11 @@ module What
     # rubocop:enable Metrics/AbcSize, Metrics/MethodLength
 
     def self.get_job(queue)
-      Connection.execute(GET_JOB, queue: queue).to_hash[0]
+      What.connection.execute(GET_JOB, queue: queue).to_hash[0]
     end
 
     def self.destroy_job(job)
-      Connection.execute(DESTROY_JOB, id: job["id"])
+      What.connection.execute(DESTROY_JOB, id: job["id"])
     end
 
     def self.record_failure(job, error, klass)
