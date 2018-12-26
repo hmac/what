@@ -3,10 +3,12 @@
 require "active_record"
 
 module What
-  # Provides a small API for interacting with the database
-  class Connection
-    class << self
-      attr_accessor :connection
+  module Connection
+    # A connection adapter for ActiveRecord
+    class ActiveRecord
+      def initialize(connection)
+        @connection = connection
+      end
 
       def transaction(&blk)
         @connection.transaction(&blk)
@@ -14,10 +16,10 @@ module What
 
       def execute(sql, raw_params = [])
         params = raw_params.map do |name, value|
-          ActiveRecord::Relation::QueryAttribute.new(
+          ::ActiveRecord::Relation::QueryAttribute.new(
             name,
             value,
-            ActiveRecord::Type.default_value
+            ::ActiveRecord::Type.default_value
           )
         end
         @connection.exec_query(sql, "", params)

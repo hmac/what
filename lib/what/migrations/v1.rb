@@ -2,7 +2,7 @@
 
 module What
   module Migrations
-    class V1 < ActiveRecord::Migration[5.0]
+    class V1 < ::ActiveRecord::Migration[5.0]
       def up
         execute(<<~SQL)
           CREATE TABLE what_jobs (

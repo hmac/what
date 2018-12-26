@@ -23,7 +23,7 @@ module What
         params = { name: name, args: JSON.dump(args), queue: queue }
         params[:run_at] = run_at if run_at
 
-        What::Connection.execute(sql, params)
+        What.connection.execute(sql, params)
       end
 
       def handle_failure(_job, _error)

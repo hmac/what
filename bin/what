@@ -16,9 +16,11 @@ raise "no file specified" unless file
 require file
 
 ActiveRecord::Base.establish_connection(adapter: "postgresql")
-What::Connection.connection = ActiveRecord::Base.connection
-
-What.logger = Logger.new(STDOUT)
+What.configure do |config|
+  config.connection =
+    What::Connection::ActiveRecord.new(ActiveRecord::Base.connection)
+  config.logger = Logger.new(STDOUT)
+end
 
 What.log_info("What starting up")
 
