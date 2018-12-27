@@ -7,7 +7,6 @@ module What
     # This is useful for automatically handling network timeouts or other
     # transient failures.
     module VariableRetry
-      # rubocop:disable Metrics/MethodLength
       def handle_failure(connection, job, error)
         error_count = job[:error_count]
         unless retryable_exception?(error) &&
@@ -22,7 +21,6 @@ module What
           interval: next_interval.to_i
         )
       end
-      # rubocop:enable Metrics/MethodLength
 
       def retryable_exception?(exception)
         retryable_exceptions.include?(exception.class)

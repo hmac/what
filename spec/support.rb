@@ -8,10 +8,11 @@ require_relative "support/what_job"
 
 What.configure { |config| config.logger = Logger.new(STDOUT) }
 
-# We need an AR connection, even if What isn't using it, to use the helper models like
-# Payment and WhatJob
+# We need an AR connection, even if What isn't using it, to use the helper
+# models like Payment and WhatJob
 ActiveRecord::Base.establish_connection(adapter: "postgresql", pool: 20)
 
+# Support class for the Sequel connection adapter
 class SequelSupport
   def initialize
     @db = Sequel.connect(adapter: "postgres", max_connections: 20)
@@ -28,6 +29,7 @@ class SequelSupport
   end
 end
 
+# Support class for the ActiveRecord connection adapter
 class ActiveRecordSupport
   def initialize
     @pool = ActiveRecord::Base.connection_pool
@@ -48,4 +50,5 @@ class ActiveRecordSupport
   end
 end
 
-AdapterSupport = (ENV["ADAPTER"] == "sequel" ? SequelSupport : ActiveRecordSupport).new
+AdapterSupport =
+  (ENV["ADAPTER"] == "sequel" ? SequelSupport : ActiveRecordSupport).new

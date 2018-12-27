@@ -11,7 +11,7 @@ module What
 
     attr_reader :connection
 
-    # rubocop:disable Metrics/AbcSize, Metrics/MethodLength
+    # rubocop:disable Metrics/AbcSize
     def work(queue)
       connection.transaction do
         job = connection.get_job(queue)
@@ -30,7 +30,7 @@ module What
       # to prefer simplicity in this case - if the worker crashes, it's expected
       # that the platform you're running on will bring it back up.
     end
-    # rubocop:enable Metrics/AbcSize, Metrics/MethodLength
+    # rubocop:enable Metrics/AbcSize
 
     def record_failure(job, error, klass)
       raise error if klass.nil?
