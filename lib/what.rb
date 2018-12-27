@@ -2,8 +2,6 @@
 
 require "what/version"
 require "what/config"
-require "what/connection/active_record"
-require "what/connection/sequel"
 require "what/failure/no_retry"
 require "what/failure/variable_retry"
 require "what/worker"
