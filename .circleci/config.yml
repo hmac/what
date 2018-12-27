@@ -6,13 +6,13 @@ jobs:
       - image: ruby:2.4.1
         environment:
           PGDATABASE: what_test
-          PGUSER: ubuntu
+          PGUSER: what
           PGPASSWORD: password
           PGHOST: localhost
       - image: postgres:9.6.3
         environment:
           POSTGRES_DB: what_test
-          POSTGRES_USER: ubuntu
+          POSTGRES_USER: what
           POSTGRES_PASSWORD: password
     steps:
       - checkout
@@ -24,13 +24,7 @@ jobs:
           paths:
             - "vendor/bundle"
       - run: bundle exec rubocop
-      - run:
-          name: wait for database
-          command: |
-            TIMEOUT=5
-            until psql -h $PGHOST -U $PGUSER -d $PGDATABASE -c "select 1" > /dev/null 2>&1 || [ $TIMEOUT -eq 0 ]; do
-              echo "Waiting for postgres server, $((TIMEOUT--)) remaining attempts..."
-              sleep 1
-            done
+      - run: dockerize -wait tcp://localhost:5432 -timeout 1m
       - run: bundle exec ruby spec/prepare.rb
       - run: bundle exec rspec
+      - run: ADAPTER=sequel bundle exec rspec
