@@ -6,24 +6,14 @@ module What
   # The base class for What jobs
   # All jobs should inherit from this class
   class Job
-    ENQUEUE = <<~SQL
-      INSERT INTO what_jobs
-      (job_class, args, queue)
-      VALUES ($1, $2, $3)
-    SQL
-    ENQUEUE_WITH_RUN_AT = <<~SQL
-      INSERT INTO what_jobs
-      (job_class, args, queue, run_at)
-      VALUES ($1, $2, $3, $4)
-    SQL
-
     class << self
       def enqueue(*args, run_at: nil)
-        sql = run_at ? ENQUEUE_WITH_RUN_AT : ENQUEUE
-        params = { name: name, args: JSON.dump(args), queue: queue }
-        params[:run_at] = run_at if run_at
-
-        What.connection.execute(sql, params)
+        What.connection.enqueue(
+          job_class: name,
+          args: args,
+          queue: queue,
+          run_at: run_at
+        )
       end
 
       def handle_failure(_job, _error)

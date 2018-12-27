@@ -3,7 +3,7 @@
 require "spec_helper"
 
 RSpec.describe What::Failure::NoRetry do
-  subject { -> { Timecop.freeze { What::Worker.work("default") } } }
+  subject { -> { Timecop.freeze { What::Worker.new.work("default") } } }
 
   before { BlowUp.enqueue }
   let(:now) { Time.now.utc }

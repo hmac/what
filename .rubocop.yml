@@ -1,5 +1,5 @@
 AllCops:
-  TargetRubyVersion: 2.4
+  TargetRubyVersion: 2.5
 
 Style/StringLiterals:
   EnforcedStyle: 'double_quotes'
@@ -12,3 +12,6 @@ Style/Documentation:
   Exclude:
     - spec/support/*.rb
     - lib/what/migrations/*.rb
+
+Metrics/MethodLength:
+  Max: 25

@@ -15,19 +15,12 @@ raise "no file specified" unless file
 
 require file
 
-ActiveRecord::Base.establish_connection(adapter: "postgresql")
-What.configure do |config|
-  config.connection =
-    What::Connection::ActiveRecord.new(ActiveRecord::Base.connection)
-  config.logger = Logger.new(STDOUT)
-end
-
 What.log_info("What starting up")
 
 loop do
   break if stop
 
-  What::Worker.work(queue)
+  What::Worker.new.work(queue)
   sleep 0.1
 end
 

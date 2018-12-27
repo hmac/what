@@ -7,7 +7,7 @@ require "date"
 RSpec.describe What::Worker do
   let(:queue) { "default" }
   subject do
-    -> { described_class.work(queue) }
+    -> { described_class.new.work(queue) }
   end
 
   describe ".work" do

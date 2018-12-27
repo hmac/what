@@ -3,7 +3,7 @@
 require "spec_helper"
 
 RSpec.describe What::Failure::VariableRetry do
-  subject { -> { What::Worker.work("default") } }
+  subject { -> { What::Worker.new.work("default") } }
 
   # TODO: The expectations on time here are quite race-prone
   # Since run_at is initially set by the database, the time won't

@@ -1,26 +1,9 @@
 What
 ====
 
-Que, but for Rails 5+ and Postgres 9.5+.
+Que, but for Postgres 9.5+.
 
 [![CircleCI](https://circleci.com/gh/hmac/what.svg?style=svg)](https://circleci.com/gh/hmac/what)
-
-Table Structure
----------------
-
-```sql
-    CREATE TABLE what_jobs (
-      id serial,
-      job_class text,
-      args json,
-      queue text,
-      run_at timestamp,
-      failed_at timestamp,
-      last_error text,
-      error_count integer,
-      runnable boolean
-    )
-```
 
 Usage
 -----
@@ -32,11 +15,93 @@ Usage
     gem "what", git: "https://github.com/hmac/what"
 ```
 
+### 2. Create the `what_jobs` table
+If you're using ActiveRecord, you can do this by running the migration included
+with what:
+
+```ruby
+    ActiveRecord::Migration.run(What::Migrations::V1)
+```
+
+If you're using Rails, it's recommended you create a new databsase migration
+which subclasses `What::Migrations::V1`. This will then be versioned and applied
+like any other migration.
+
+```ruby
+    # db/migrate/*_create_what_jobs.rb
+
+    class CreateWhatJobs < What::Migrations::V1
+    end
+```
+
+If you're using Sequel, you'll have to create the table yourself. The structure
+is as follows:
+
+```sql
+    CREATE TABLE what_jobs (
+      id serial NOT NULL,
+      job_class text NOT NULL,
+      args json NOT NULL,
+      queue text NOT NULL,
+      run_at timestamp NOT NULL,
+      failed_at timestamp,
+      last_error text,
+      error_count integer,
+      runnable boolean NOT NULL,
+    )
+```
+
+This corresponds to the following in Sequel's migration DSL:
+```ruby
+    Sequel.migration do
+      up do
+        create_table(:what_jobs) do
+          primary_key :id, type: :Bignum, null: false
+          String :job_class, null: false
+          jsonb :args, null: false
+          String :queue, null: false
+          Time :run_at, null: false
+          Time :failed_at
+          String :last_error
+          Integer :error_count
+          TrueClass :runnable, null: false
+        end
+      end
+
+      down do
+        drop_table(:what_jobs)
+      end
+    end
+```
+
 ### 2. Create an entrypoint file for your project.
 This is the file that What workers will load before running your jobs - it
-should require all the relevant classes and libraries necessary for your jobs
-to run. For Rails, you should be able to use `config/environment.rb` instead
-of creating your own. For an example, see `spec/support.rb`.
+should require all the relevant classes and libraries necessary for your jobs to
+run. For an example, see `spec/spec_helper.rb`. Loading this file should set up
+the database connection and configure What to use it.
+
+If you're using Rails, you can configure What in an initializer and use
+`config/environment.rb` as your entrypoint.
+
+```ruby
+    # config/initializers/what.rb
+
+    require "what"
+
+    What.configure do |config|
+        config.connection =
+            What::Connection::ActiveRecord.new(ActiveRecord::Base.connection)
+        config.logger = Rails.logger
+    end
+```
+
+If you're using Sequel, pass a reference to the Sequel database object.
+```ruby
+    DB = Sequel.connect(...)
+    What.configure do |config|
+        config.connection = What::Connection::Sequel.new(DB)
+    end
+```
 
 ### 3. Write your jobs as subclasses of `What::Job`
 Your jobs should subclass `What::Job` and define a `run` method which will be
@@ -63,6 +128,15 @@ What workers run in separate processes, and can be launched via the `what`
 executable. They take as arguments the queue to work and the entrypoint file.
 
     bundle exec what default ./entrypoint.rb
+
+The `what` executable is very small and can be replaced with a custom script if
+you prefer. The role of the executable is the following:
+- require the entrypoint file to initialise the application
+- set up interrupt handlers to cleanly shut down the worker when asked
+- run the worker in a loop, sleeping for a small period of time between each run
+
+See [the code](https://github.com/hmac/what/blob/master/bin/what) for more
+information.
 
 Working Jobs
 ------------
@@ -169,4 +243,5 @@ is intended for diagnostic purposes.
 References
 ----------
 
-What is a shameless rip-off of [Que](https://github.com/chanks/que).
+What is heavily inspired by [Que](https://github.com/chanks/que), but aims for
+simplicity and small code size over feature richness.
