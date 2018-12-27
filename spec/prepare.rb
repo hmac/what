@@ -11,5 +11,5 @@ end
 
 ActiveRecord::Migration.run(What::Migrations::V1)
 
-What.connection.execute("DROP TABLE IF EXISTS payments")
-What.connection.execute("CREATE TABLE payments (amount integer)")
+What.connection.execute_literal("DROP TABLE IF EXISTS payments")
+What.connection.execute_literal("CREATE TABLE payments (amount integer)")
