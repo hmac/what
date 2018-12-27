@@ -3,7 +3,7 @@ jobs:
   build:
     working_directory: ~/what
     docker:
-      - image: ruby:2.4.1
+      - image: circleci/ruby:2.5.3
         environment:
           PGDATABASE: what_test
           PGUSER: what
