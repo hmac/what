@@ -17,14 +17,19 @@ jobs:
     steps:
       - checkout
       - restore_cache:
-          key: gemfile-lock-{{ .Branch }}-{{ checksum "Gemfile.lock" }}
-      - run: bundle install --deployment
+          keys:
+            - bundle-{{ checksum "Gemfile.lock" }}
+            - bundle-
+      - run: bundle check || bundle install
       - save_cache:
-          key: gemfile-lock-{{ .Branch }}-{{ checksum "Gemfile.lock" }}
+          key: bundle-{{ checksum "Gemfile.lock" }}
           paths:
-            - "vendor/bundle"
-      - run: bundle exec rubocop
+            - vendor/bundle
+
       - run: dockerize -wait tcp://localhost:5432 -timeout 1m
+
       - run: bundle exec ruby spec/prepare.rb
       - run: bundle exec rspec
       - run: ADAPTER=sequel bundle exec rspec
+
+      - run: bundle exec rubocop
