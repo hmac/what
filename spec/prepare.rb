@@ -1,7 +1,10 @@
 # frozen_string_literal: true
 
+require "active_record"
+
 require "what"
 require "what/migrations/v1"
+require "what/connection/active_record"
 
 ActiveRecord::Base.establish_connection(adapter: "postgresql")
 What.configure do |config|
