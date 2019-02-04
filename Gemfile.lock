@@ -59,7 +59,7 @@ GEM
       ruby-progressbar (~> 1.7)
       unicode-display_width (~> 1.4.0)
     ruby-progressbar (1.10.0)
-    sequel (5.16.0)
+    sequel (5.17.0)
     thread_safe (0.3.6)
     timecop (0.9.1)
     tzinfo (1.2.5)
