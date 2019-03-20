@@ -17,11 +17,15 @@ module What
         job = connection.get_job(queue)
         return if job.nil? # there are no jobs to work
 
+        What.log_info("Job acquired: #{job[:id]}")
+
         begin
           klass = self.class.const_get(job[:job_class])
           connection.transaction { klass.new.run(*job[:args]) }
           connection.destroy_job(job[:id])
+          What.log_info("Job run successfully: #{job[:id]}")
         rescue StandardError => error
+          What.log_info("Job failed: #{job[:id]}")
           record_failure(job, error, klass)
         end
       end
@@ -31,6 +35,8 @@ module What
       # that the platform you're running on will bring it back up.
     end
     # rubocop:enable Metrics/AbcSize
+
+    private
 
     def record_failure(job, error, klass)
       raise error if klass.nil?
