@@ -30,7 +30,7 @@ like any other migration.
 ```ruby
     # db/migrate/*_create_what_jobs.rb
 
-    require "what"
+    require "what/migrations/v1"
 
     class CreateWhatJobs < What::Migrations::V1
     end
@@ -89,6 +89,7 @@ If you're using Rails, you can configure What in an initializer and use
     # config/initializers/what.rb
 
     require "what"
+    require "what/connection/active_record"
 
     What.configure do |config|
         config.connection =
