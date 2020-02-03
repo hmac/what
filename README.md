@@ -30,6 +30,8 @@ like any other migration.
 ```ruby
     # db/migrate/*_create_what_jobs.rb
 
+    require "what"
+
     class CreateWhatJobs < What::Migrations::V1
     end
 ```

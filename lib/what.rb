@@ -6,6 +6,8 @@ require "what/failure/no_retry"
 require "what/failure/variable_retry"
 require "what/worker"
 require "what/job"
+require "what/connection"
+require "what/migrations/v1"
 
 # rubocop:disable Style/Documentation
 module What
