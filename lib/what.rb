@@ -18,7 +18,14 @@ module What
       logger&.error(message)
     end
 
+    # We allow config.connection to be a Proc to support lazy connection
+    # checkout. This means What will only complain about the lack of a database
+    # connection if it's actually used.
     def connection
+      if config.connection.is_a?(Proc)
+        config.connection = config.connection.call
+      end
+
       config.connection
     end
 
