@@ -92,8 +92,9 @@ If you're using Rails, you can configure What in an initializer and use
     require "what/connection/active_record"
 
     What.configure do |config|
-        config.connection =
-            What::Connection::ActiveRecord.new(ActiveRecord::Base.connection)
+        config.connection = What::Connection::ActiveRecord.new(
+            ActiveRecord::Base.connection_pool.checkout
+        )
         config.logger = Rails.logger
     end
 ```

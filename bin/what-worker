@@ -20,8 +20,12 @@ What.log_info("What starting up")
 loop do
   break if stop
 
-  What::Worker.new.work(queue)
-  sleep 0.1
+  # If we found no jobs to work, sleep for longer.
+  if What::Worker.new.work(queue)
+    sleep 0.1
+  else
+    sleep 1
+  end
 end
 
 What.log_info("What shutting down")

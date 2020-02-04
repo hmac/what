@@ -15,7 +15,7 @@ module What
     def work(queue)
       connection.transaction do
         job = connection.get_job(queue)
-        return if job.nil? # there are no jobs to work
+        return false if job.nil? # there are no jobs to work
 
         What.log_info("Job acquired: #{job[:id]}")
 
@@ -24,9 +24,11 @@ module What
           connection.transaction { klass.new.run(*job[:args]) }
           connection.destroy_job(job[:id])
           What.log_info("Job run successfully: #{job[:id]}")
-        rescue StandardError => error
+        rescue StandardError => e
           What.log_info("Job failed: #{job[:id]}")
-          record_failure(job, error, klass)
+          record_failure(job, e, klass)
+        ensure
+          true
         end
       end
       # Que adds another rescue here to ensure the worker doesn't crash if a

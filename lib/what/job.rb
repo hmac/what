@@ -16,7 +16,7 @@ module What
         )
       end
 
-      def handle_failure(_job, _error)
+      def handle_failure(_connection, _job, _error)
         raise NotImplementedError
       end
 
