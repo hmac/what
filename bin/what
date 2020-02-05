@@ -13,6 +13,8 @@ raise "no queue specified" unless queue
 file = ARGV[1]
 raise "no file specified" unless file
 
+$stdout.sync = true
+
 require file
 
 What.log_info("What starting up")
