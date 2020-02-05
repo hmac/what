@@ -19,6 +19,7 @@ Gem::Specification.new do |spec|
   spec.test_files    = spec.files.grep(%r{^(test|spec|features)/})
   spec.require_paths = ["lib"]
 
+  spec.add_dependency "activejob", ">= 6.0"
   # Needed to handle intervals in the VariableRetry strategy
   spec.add_dependency "activesupport", ">= 5.0"
 

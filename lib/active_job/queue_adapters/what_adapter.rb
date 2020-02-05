@@ -1,5 +1,7 @@
 # frozen_string_literal: true
 
+require "active_job"
+
 module ActiveJob
   module QueueAdapters
     # ActiveJob adapter
