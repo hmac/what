@@ -57,6 +57,17 @@ RSpec.describe What::Worker do
         expect(WhatJob.count).to eq(1)
         expect(WhatJob.first.queue).to eq("default")
       end
+
+      context "when the worker is given both queues to work" do
+        let(:queue) { %w[default other_queue] }
+
+        it "works both the jobs" do
+          subject.call
+          subject.call
+
+          expect(WhatJob.count).to eq(0)
+        end
+      end
     end
 
     context "with a job scheduled to run in the future" do
