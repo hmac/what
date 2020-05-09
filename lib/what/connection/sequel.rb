@@ -21,13 +21,13 @@ module What
         @connection[sql].all
       end
 
-      # @param queue [String]
+      # @param queues [Array<String>]
       # @return [Hash, nil]
-      def get_job(queue)
+      def get_job(queues)
         @connection[:what_jobs]
           .for_update
           .skip_locked
-          .where(runnable: true, queue: queue)
+          .where(runnable: true, queue: queues)
           .where { run_at < ::Sequel::CURRENT_TIMESTAMP }
           .first
           &.transform_values { |val| convert_json_fields(val) }

@@ -9,6 +9,7 @@ stop = false
 
 queue = ARGV[0]
 raise "no queue specified" unless queue
+queues = queue.split(",")
 
 file = ARGV[1]
 raise "no file specified" unless file
@@ -19,11 +20,13 @@ require file
 
 What.log_info("What starting up")
 
+worker = What::Worker.new
+
 loop do
   break if stop
 
   # If we found no jobs to work, sleep for longer.
-  if What::Worker.new.work(queue)
+  if worker.work(queues)
     sleep 0.1
   else
     sleep 1
