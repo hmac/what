@@ -11,7 +11,7 @@ Usage
 ### 1. Add What to your Gemfile
 
 ```ruby
-    # This will be less ridiculous once What is released/is on rubygems
+    # This will be easier once What is released/is on rubygems
     gem "what", git: "https://github.com/hmac/what"
 ```
 
@@ -129,7 +129,8 @@ will be used by default. You can also specify a queue, which defaults to
 
 ### 4. Spin up What workers
 What workers run in separate processes, and can be launched via the `what`
-executable. They take as arguments the queue to work and the entrypoint file.
+executable. They take as arguments a comma-separated list of queues to work and
+an entrypoint file.
 
     bundle exec what default ./entrypoint.rb
 
