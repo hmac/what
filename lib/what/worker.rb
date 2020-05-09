@@ -12,9 +12,10 @@ module What
     attr_reader :connection
 
     # rubocop:disable Metrics/AbcSize
-    def work(queue)
+    def work(queues)
+      queues = Array.wrap(queues)
       connection.transaction do
-        job = connection.get_job(queue)
+        job = connection.get_job(queues)
         return false if job.nil? # there are no jobs to work
 
         What.log_info("Job acquired: #{job[:id]}")

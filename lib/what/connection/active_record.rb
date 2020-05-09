@@ -19,17 +19,20 @@ module What
         execute(sql).to_a
       end
 
-      def get_job(queue)
+      # @param queues [Array<String>]
+      # @return [Hash, nil]
+      def get_job(queues)
+        queues_sql = "(#{queues.map { |q| @connection.quote(q) }.join(',')})"
         query = <<~SQL
           SELECT *
           FROM what_jobs
           WHERE runnable = true
-          AND queue = :queue
+          AND queue IN #{queues_sql}
           AND run_at < now()
           FOR UPDATE SKIP LOCKED
           LIMIT 1
         SQL
-        job = execute(query, queue: queue).to_a.first
+        job = execute(query).to_a.first
         return if job.nil?
 
         job.merge("args" => JSON.parse(job["args"])).symbolize_keys
