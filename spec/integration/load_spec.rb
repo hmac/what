@@ -2,25 +2,21 @@
 
 require "spec_helper"
 require "support"
+require "concurrent"
 
 RSpec.describe "a load test" do
   def with_workers(num_workers)
-    stop_threads = Array.new(num_workers).map do
-      stop = false
-      Thread.new do
+    pool = Concurrent::FixedThreadPool.new(5)
+
+    Array.new(num_workers).map do
+      pool.post do
         AdapterSupport.with_connection do |conn|
-          worker = What::Worker.new(conn)
-          until stop
-            worker.work("default")
-            sleep 0.01
-          end
+          What::Worker.new(conn).work("default")
         end
       end
-      -> { stop = true }
     end
-    yield
   ensure
-    stop_threads.each(&:call)
+    pool.wait_for_termination(1)
   end
 
   context "when many jobs are being worked concurrently" do
@@ -58,9 +54,6 @@ RSpec.describe "a load test" do
 
         expect(WhatJob.count).to eq(failed_job_count)
 
-        # This is needed so the following expectation passes
-        # TODO: why?
-        sleep 0.5
         expect(WhatJob.all.map(&:error_count).uniq).to eq([1])
 
         expect(WhatJob.all.map(&:last_error).uniq.count).to eq(failed_job_count)
