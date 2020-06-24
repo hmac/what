@@ -1,6 +1,5 @@
 # frozen_string_literal: true
 
-require "pry"
 require "what"
 require "active_record"
 require "sequel"

@@ -67,7 +67,7 @@ module What
           error_count: ::Sequel[:error_count] + 1,
           run_at: ::Sequel.date_add(
             ::Sequel::CURRENT_TIMESTAMP,
-            interval.seconds
+            seconds: interval
           )
         )
       end
