@@ -13,12 +13,12 @@ What.configure { |config| config.logger = Logger.new(STDOUT) }
 
 # We need an AR connection, even if What isn't using it, to use the helper
 # models like Payment and WhatJob
-ActiveRecord::Base.establish_connection(adapter: "postgresql", pool: 20)
+ActiveRecord::Base.establish_connection(ENV["DATABASE_URL"])
 
 # Support class for the Sequel connection adapter
 class SequelSupport
   def initialize
-    @db = Sequel.connect(adapter: "postgres", max_connections: 20)
+    @db = Sequel.connect(ENV["DATABASE_URL"], max_connections: 20)
     @conn = What::Connection::Sequel.new(@db)
     configure
   end
