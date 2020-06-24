@@ -3,8 +3,6 @@ What
 
 Que, but for Postgres 9.5+.
 
-[![CircleCI](https://circleci.com/gh/hmac/what.svg?style=svg)](https://circleci.com/gh/hmac/what)
-
 Usage
 -----
 
