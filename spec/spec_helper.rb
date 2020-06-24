@@ -6,6 +6,7 @@ require "active_record"
 require "sequel"
 require "timecop"
 
+require "prepare"
 require "support"
 
 RSpec.configure do |config|

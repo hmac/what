@@ -1,0 +1,27 @@
+version: '3'
+
+services:
+  postgres:
+    image: postgres:11.6-alpine
+    volumes:
+      - ".build/data/postgres:/var/lib/postgresql/data"
+      - ".build/logs/postgres:/var/log"
+    environment:
+      POSTGRES_PASSWORD: what
+
+  gem:
+    image: ruby:2.7-alpine
+    volumes:
+      - ./:/gem
+    working_dir: /gem
+    depends_on:
+      - postgres
+    command:
+      - sh
+      - -c
+      - |
+        apk add build-base git postgresql-dev
+        bundle install
+        bundle exec rake
+    environment:
+      DATABASE_URL: postgresql://postgres:what@postgres/postgres?pool=20
