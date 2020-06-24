@@ -77,10 +77,11 @@ module What
       def convert_json_fields(value)
         case value
         when ::Sequel::Postgres::JSONBArray, ::Sequel::Postgres::JSONArray
-          then value.to_a
+          value.to_a
         when ::Sequel::Postgres::JSONBHash, ::Sequel::Postgres::JSONHash
-          then value.to_h
-        else value
+          value.to_h
+        else
+          value
         end
       end
     end
