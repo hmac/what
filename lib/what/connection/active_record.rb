@@ -101,7 +101,7 @@ module What
 
       def execute(query, binds = {})
         @connection.exec_query(
-          ::ActiveRecord::Base.sanitize_sql_array([query, binds]),
+          ::ActiveRecord::Base.send(:sanitize_sql_array, [query, binds]),
           caller_locations(1..1).first.base_label
         )
       end

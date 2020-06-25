@@ -9,7 +9,7 @@ module What
     module VariableRetry
       # rubocop:disable Metrics/AbcSize
       def handle_failure(connection, job, error)
-        error_count = job[:error_count]
+        error_count = job[:error_count].to_i
         unless retryable_exception?(error)
           What.log_info("Exception not retryable (#{job[:id]}): #{error}")
           return NoRetry.handle_failure(connection, job, error)

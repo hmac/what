@@ -1,13 +1,17 @@
 name: what
 
-on: [push]
+on: [push, pull_request]
 
 jobs:
-  ci:
+  ci_with_rails_version:
     runs-on: ubuntu-18.04
+
+    strategy:
+      matrix:
+        rails: [5, 6]
 
     steps:
     - uses: actions/checkout@master
 
     - name: Runs code QA and tests
-      run: docker-compose run gem
+      run: docker-compose run -e RAILS_VERSION='~> ${{ matrix.rails }}' gem
