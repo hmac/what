@@ -1,7 +1,6 @@
 # frozen_string_literal: true
 
 require "active_record"
-require "active_support/core_ext/integer"
 
 module What
   module Connection
@@ -85,7 +84,7 @@ module What
       end
 
       def retry_at_interval(id:, last_error:, interval:)
-        interval = "#{interval.seconds} seconds"
+        interval = "#{interval} seconds"
         query = <<~SQL
           UPDATE what_jobs
           SET runnable = true,
@@ -102,7 +101,7 @@ module What
 
       def execute(query, binds = {})
         @connection.exec_query(
-          ::ActiveRecord::Base.sanitize_sql_array([query, binds]),
+          ::ActiveRecord::Base.send(:sanitize_sql_array, [query, binds]),
           caller_locations(1..1).first.base_label
         )
       end
