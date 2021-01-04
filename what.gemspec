@@ -20,7 +20,7 @@ Gem::Specification.new do |spec|
   spec.require_paths = ["lib"]
 
   rails_version = ENV["RAILS_VERSION"]
-  rails_version = ">= 5.0" if rails_version.empty?
+  rails_version = ">= 5.0" if rails_version.nil? || rails_version.empty?
 
   spec.add_development_dependency "pg"
   spec.add_development_dependency "activejob", rails_version
