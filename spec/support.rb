@@ -9,7 +9,7 @@ require_relative "support/what_job"
 require "what/connection/active_record"
 require "what/connection/sequel"
 
-What.configure { |config| config.logger = Logger.new(STDOUT) }
+What.configure { |config| config.logger = Logger.new($stdout) }
 
 # We need an AR connection, even if What isn't using it, to use the helper
 # models like Payment and WhatJob
