@@ -14,8 +14,8 @@ module What
 
       # rubocop:disable Style/AccessModifierDeclarations
       module_function :handle_failure
-      public :handle_failure
       # rubocop:enable Style/AccessModifierDeclarations
+      public :handle_failure
     end
   end
 end
