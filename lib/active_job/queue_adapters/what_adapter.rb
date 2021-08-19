@@ -4,7 +4,7 @@ module ActiveJob
   module QueueAdapters
     # ActiveJob adapter
     class WhatAdapter
-      def enqueue(job) #:nodoc:
+      def enqueue(job) # :nodoc:
         data = job.serialize
         What.connection.enqueue(
           job_class: WhatJobWrapper,
@@ -14,7 +14,7 @@ module ActiveJob
         )
       end
 
-      def enqueue_at(job, timestamp) #:nodoc:
+      def enqueue_at(job, timestamp) # :nodoc:
         data = job.serialize
         What.connection.enqueue(
           job_class: WhatJobWrapper,
