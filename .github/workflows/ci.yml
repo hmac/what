@@ -3,6 +3,28 @@ name: what
 on: [push, pull_request]
 
 jobs:
+  codeql:
+    runs-on: ubuntu-latest
+    env:
+      CODEQL_ENABLE_EXPERIMENTAL_FEATURES: true
+    permissions:
+      security-events: write
+      actions: read
+      contents: read
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+
+      - name: Initialize CodeQL
+        uses: github/codeql-action/init@v1.0.12
+        with:
+          languages: ruby
+
+      - name: Perform CodeQL analysis
+        uses: github/codeql-action/analyze@v1.0.12
+        with:
+          category: codeql/ruby/full
+
   ci_with_rails_version:
     runs-on: ubuntu-18.04
 
